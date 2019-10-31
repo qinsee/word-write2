@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.word.write.dao.WriteaMapper">
+    <insert id="addWritea" parameterType="Writea">
+        INSERT INTO `word_write`.`writea` (`writeid`, `pid`, `writeword`, `isyes`, `writedate`, `stuid`, `stuclass`, `pnum`)
+        VALUES (#{writeid}, #{pid}, #{writeword}, #{isyes}, #{writedate}, #{stuid}, #{stuclass}, #{pnum});
+	</insert>
+
+    <delete id="delWritea" parameterType="Integer">
+	   delete from `word_write`.`writea` where writeid=#{writeid}
+	</delete>
+    <select id="findPaperByPnum" resultType="Paper">
+        select p.*,w.*,s.* from paper p,worda w,stuclass s
+        <where>
+            p.wordid = w.wordid and p.classid = s.classid and p.pid in (select min(pid) from paper group by pnum)
+            <if test="pnum!=null">
+                and p.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="classid!=null">
+                and p.classid=#{classid}
+            </if>
+        </where>
+    </select>
+    <select id="showExam" resultType="Paper">
+        select p.*,w.*,s.* from paper p,worda w,stuclass s
+        <where>
+            p.wordid = w.wordid and p.classid = s.classid
+            <if test="pnum!=null">
+                and p.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="classid!=null">
+                and p.classid=#{classid}
+            </if>
+        </where>
+    </select>
+    <select id="findWriteaCount" resultType="int">
+        select COUNT(1) from writea writea w,student t,stuclass c
+        <where>
+            w.stuid=t.stuid and w.stuclass=c.classid
+            <if test="pnum!=null">
+                and pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="writeDateStart!=null">
+                and writedate between #{writeDateStart} and #{writeDateEnd}
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+            <if test="isyes!=null">
+                and isyes=#{isyes}
+            </if>
+        </where>
+    </select>
+    <select id="countPaper" resultType="int">
+        select count(1) from paper p,worda w,stuclass s
+        where p.wordid = w.wordid
+        and p.classid = s.classid
+        and p.pnum=#{pnum}
+        and p.classid=#{classid}
+    </select>
+    <select id="findWritea" resultType="Writea">
+        select * from writea writea w,student t,stuclass c
+        <where>
+            w.stuid=t.stuid and w.stuclass=c.classid
+            <if test="pnum!=null">
+                and pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="writeDateStart!=null">
+                and writedate between #{writeDateStart} and #{writeDateEnd}
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+            <if test="isyes!=null">
+                and isyes=#{isyes}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="findWriteaByIsYes" resultType="Writea">
+        select * from  writea w,student t,stuclass c,paper p,worda wo
+        <where>
+        w.stuid=t.stuid and w.stuclass=c.classid and p.wordid = wo.wordid and p.pnum=w.pnum
+        <if test="pnum!=null">
+            and w.pnum like CONCAT('%',#{pnum},'%')
+        </if>
+        <if test="stuclass!=null">
+            and w.stuclass=#{stuclass}
+        </if>
+        <if test="stuid!=null">
+            and w.stuid=#{stuid}
+        </if>
+        <if test="isyes!=null">
+            and w.isyes=#{isyes}
+        </if>
+    </where>
+        order by writedate
+    </select>
+</mapper>

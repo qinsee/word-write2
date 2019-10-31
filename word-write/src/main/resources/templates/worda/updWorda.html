@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>修改单词</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="layui-form">
+        <div style="background-color: #DDDDDD;">
+            <h2 style="margin-left: 10px;line-height:42px;">修改单词</h2>
+        </div>
+        <br />
+        <div class="layui-row">
+            <div class="layui-col-sm6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">汉语意思:</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" id="wordid" th:value="${sc.wordid}"/>
+                        <input type="text" id="wordmeaning" name="wordmeaning" th:value="${sc.wordmeaning}" lay-verify="classname" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="layui-row">
+            <div class="layui-col-sm6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单词:</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="word" name="word" th:value="${sc.word}" lay-verify="classname" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: left">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-sm " id="btnSave"><i class="layui-icon layui-icon-ok " ></i>提交</button>
+                <button class="layui-btn layui-btn-sm " id="btnCancel"><i class="layui-icon layui-icon-close " ></i>取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['form','laydate'], function() {
+        var form = layui.form
+            ,laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#time',
+            type:'date',
+            value:new Date()
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#btnCancel").click(function(){
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);//关闭弹出的子页面窗口
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        function Verification(){
+            var a1=$("#wordmeaning").val();
+            var a2=$("#word").val();
+            if(a1=="" || a1==null){
+                layer.msg('汉语意思不能为空', {icon: 2,time: 1000},function(){$("#wordmeaning").focus()});
+                return false;
+            }
+            if(a2=="" || a2==null){
+                layer.msg('单词不能为空', {icon: 2,time: 1000},function(){$("#word").focus()});
+                return false;
+            }
+            return true;
+        }
+        $("#btnSave").click(function(){
+            if(Verification()==true){
+                $.ajax({
+                    type:"post",
+                    url:"../worda/updWorda",
+                    data:{
+                        wordid:$("#wordid").val(),
+                        wordmeaning:$("#wordmeaning").val(),
+                        word:$("#word").val()
+                    },
+                    dataType:"json",
+                    success:function(data){
+                        if(data>0){
+                            layer.msg('修改成功',{icon:6,time:2000},function(){var index = parent.layer.getFrameIndex(window.name);parent.location.reload();
+                                parent.layer.close(index);});
+                        }else{
+                            alert("修改失败！");
+                        }
+                    },
+                    error:function(){
+                        alert("ajax错误！");
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+</html>

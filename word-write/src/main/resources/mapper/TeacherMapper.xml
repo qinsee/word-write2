@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.word.write.dao.TeacherMapper">
+    <insert id="addTeacher" parameterType="Teacher">
+		INSERT INTO `word_write`.`teacher` (`tid`, `stuclass`, `tname`, `tphone`)
+		 VALUES (#{tid}, #{stuclass}, #{tname}, #{tphone});
+	</insert>
+
+    <update id="updTeacher" parameterType="Teacher">
+		UPDATE `word_write`.`teacher` SET  `stuclass`=#{stuclass}, `tname`=#{tname}, `tphone`=#{tphone} WHERE `tid`=#{tid};
+	</update>
+    <delete id="delTeacher" parameterType="Integer">
+	   delete from teacher where tid=#{tid}
+	</delete>
+    <select id="findTeacherCount" resultType="int">
+        select COUNT(1) from teacher t,stuclass c
+        <where>
+            and t.stuclass=c.classid
+            <if test="tname!=null">
+                and tname like CONCAT('%',#{tname},'%')
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+        </where>
+    </select>
+    <select id="findTeacher" resultType="Teacher">
+        select * from teacher
+        <where>
+            <if test="tname!=null">
+                tname like CONCAT('%',#{tname},'%')
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+
+    <select id="findTeacherById" parameterType="Integer" resultType="Teacher">
+	    select * from teacher where tid=#{tid}
+	</select>
+</mapper>

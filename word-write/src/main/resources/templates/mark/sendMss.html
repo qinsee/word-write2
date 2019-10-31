@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+    <style type="text/css">
+        #div{
+            background-color: #F3F3F3;
+            border: 1px solid #CCCCCC;
+            height:40px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-container layui-form">
+    <div class="layui-row" style="border-bottom:1px solid grey ;" id="div">
+        <h1><img src="../../images/tit1.png" />&nbsp;发送验证码</h1>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">电话号码<span style="color: red;">*</span></label>
+                <div class="layui-input-block">
+                    <input type="text" id="phone" name="phone"  required
+                           lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red;">*验证码</span></label>
+                <div class="layui-input-block">
+                    <input type="text" id="mark" name="mark"
+                           lay-verify="required"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row" style="text-align: right;">
+        <div class="layui-col-sm4">&nbsp;</div>
+        <div class="layui-col-sm2">
+            <button class="layui-btn layui-btn-sm " id="btnSave">
+                <i class="layui-icon layui-icon-ok "></i>发送
+            </button>
+            <button class="layui-btn layui-btn-sm " id="btnCancel">
+                <i class="layui-icon layui-icon-close "></i>取消
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form,
+            laydate = layui.laydate;
+        //日期
+        // laydate.render({
+        //     elem: '#markdate',
+        //     type: 'date' //datetime
+        //
+        // });
+    });
+</script>
+<script type="text/javascript">
+    function Verification() {
+
+        return true;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btnSave").click(function() {
+            var verification = Verification();
+            if (Verification) {
+                $.ajax({
+                    type : "post",
+                    url : "../mark/sendMss2",
+                    data : {
+                        phone : $("#phone").val(),
+                        mark : $("#mark").val()
+                    },
+                    dataType : "json",
+                    success : function(reqData) {
+                        if (reqData > 0) {
+                            layer.msg('发送成功', {
+                                icon : 1,
+                                time : 1000
+                            }, function() {
+                                //parent.location.reload();
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg('发送失败', {
+                                icon : 2,
+                                time : 1000
+                            });
+                        }
+                    },
+                    error : function() {
+                        layer.msg('ajax执行错误！', {
+                            icon : 2,
+                            time : 1000
+                        });
+                    }
+                });
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    //关闭
+    $("document").ready(function() {
+        $("#btnCancel").click(function() {
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);//关闭弹出的子页面窗口
+        });
+    });
+</script>
+</html>

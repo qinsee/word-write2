@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.word.write.dao.MarkMappper">
+    <insert id="addMark" parameterType="Mark">
+		INSERT INTO `word_write`.`mark` (`mid`, `stuid`, `stuclass`, `mark`, `markdate`, `isflag`, `remark`, `pnum`)
+		 VALUES (#{mid}, #{stuid}, #{stuclass}, #{mark}, #{markdate}, #{isflag}, #{remark}, #{pnum});
+	</insert>
+
+    <update id="updMark" parameterType="Mark">
+		UPDATE `word_write`.`mark` SET  `stuid`=#{stuid}, `stuclass`=#{stuclass}, `mark`=#{mark}, `markdate`=#{markdate}, `isflag`=#{isflag}, `remark`=#{remark}, `pnum`=#{pnum} WHERE `mid`=#{mid};
+	</update>
+    <delete id="delMark" parameterType="Integer">
+	   delete from Mark where mid=#{mid}
+	</delete>
+    <select id="findMarkCount" resultType="int">
+        select COUNT(1) from mark m,student t,stuclass c ,paper p
+        <where>
+            m.stuid=t.stuid and m.stuclass=c.classid and m.pnum=p.pnum
+            <if test="pnum!=null">
+                and m.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="markDateStart!=null">
+                and m.pdate between pdateStart and pdateEnd
+            </if>
+            <if test="stuclass!=null">
+                and m.classid=classid
+            </if>
+            <if test="isflag!=null">
+                and m.isflag=#{isflag}
+            </if>
+        </where>
+    </select>
+    <select id="findMark" resultType="Mark">
+        select * from mark m,student t,stuclass c ,paper p
+        <where>
+            m.stuid=t.stuid and m.stuclass=c.classid and m.pnum=p.pnum
+            <if test="pnum!=null">
+                and m.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="markDateStart!=null">
+                and m.pdate between pdateStart and pdateEnd
+            </if>
+            <if test="stuclass!=null">
+                and m.classid=classid
+            </if>
+            <if test="isflag!=null">
+                and m.isflag=#{isflag}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="findMarkById" parameterType="Integer" resultType="Mark">
+	    select * from Mark where mid=#{mid}
+	</select>
+</mapper>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>随机单词</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="layui-form">
+            <div style="background-color: #DDDDDD;">
+                <h2 style="margin-left: 10px;line-height:42px;">单词默写</h2>
+            </div>
+            <br />
+            <div class="layui-row">
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a1" name="a1" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a2" name="a2" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a3" name="a3" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a4" name="a4" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a5" name="a5" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a6" name="a6" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a7" name="a7" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a8" name="a8" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a9" name="a9" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">班级名称:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="a10" name="a10" lay-verify="classname" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    layui.use(['form','laydate'], function() {
+        var form = layui.form
+            ,laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#time',
+            type:'date',
+            value:new Date()
+        });
+
+    });
+</script>
+</html>

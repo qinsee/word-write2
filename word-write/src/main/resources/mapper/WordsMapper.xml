@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.word.write.dao.WordaMapper">
+    <select id="findWorda"  resultType="Worda" parameterType="String">
+        SELECT * FROM worda
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="wordmeaning!=null and wordmeaning!=''">
+                and wordmeaning = #{wordmeaning}
+            </if>
+            <if test="word!=null and word!=''">
+                and word = #{word}
+            </if>
+        </trim>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="countWorda" parameterType="String" resultType="Integer">
+        SELECT COUNT(wordid) FROM worda
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="wordmeaning!=null and wordmeaning!=''">
+                and wordmeaning = #{wordmeaning}
+            </if>
+            <if test="word!=null and word!=''">
+                and word = #{word}
+            </if>
+        </trim>
+    </select>
+    <insert id="addWorda" parameterType="Worda">
+        INSERT INTO worda (`wordmeaning`, `word`) VALUES (#{wordmeaning}, #{word})
+    </insert>
+    <select id="findOneWorda" resultType="Worda" parameterType="Integer">
+        SELECT * FROM worda WHERE wordid = #{id}
+    </select>
+    <update id="updWorda" parameterType="Worda">
+        UPDATE worda SET `wordmeaning`=#{wordmeaning}, `word`=#{word} WHERE wordid=#{wordid}
+    </update>
+    <delete id="delWorda" parameterType="Integer">
+        delete from worda where wordid = #{id}
+    </delete>
+</mapper>

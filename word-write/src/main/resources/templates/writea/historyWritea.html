@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-sm3">
+            <h1 style="text-align: center">默写题库</h1>
+        </div>
+    </div>
+    <div id="tbody">
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type : "post",
+            url : "../writea/question",
+            data : {
+
+            },
+            dataType : "json",
+            success : function(reqData) {
+                var str = "";
+                $.each(reqData,function(index,value){
+                    alert(value.pnum);
+                    str+='<div class="layui-row layui-bg-gray" style="margin-top: 5px">'
+                    str+='<div class="layui-col-sm10" >'
+                    str+='  <h3 style="margin-top: 5px">'
+                    str+=value.pnum
+                    str+='</h3>'
+                    str+='  <p style="margin-top: 5px">出题人:<span>'
+                    str+=value.username
+                    str+='</span>&nbsp;&nbsp;试卷日期:<span>'
+                    str+=value.pdate
+                    str+='</span></p></div>'
+                    str+='<div class="layui-col-sm2" >'
+                    str+='   <a href="../writea/detailWritea" id="btnAdd" class="layui-btn layui-btn-sm" style="margin-top: 8px;">\n' +
+                        '                <i class="layui-icon layui-icon-add-1"></i>\n' +
+                        '            </a>'
+                    str+='  </div></div>'
+
+                });
+                $("#tbody").html(str);
+
+            },
+            error : function() {
+                layer.msg('ajax执行错误！', {
+                    icon : 2,
+                    time : 1000
+                });
+            }
+        });
+    })
+</script>
+</html>

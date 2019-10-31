@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.word.write.dao.StuClassMapper">
+    <select id="findStuClass" parameterType="String" resultType="StuClass">
+        SELECT * FROM stuclass
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="name!=null and name!=''">
+                and classname like concat('%',#{name},'%')
+            </if>
+        </trim>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="countStuClass" parameterType="String" resultType="Integer">
+        SELECT COUNT(classid) FROM stuclass
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="name!=null and name!=''">
+                and classname like concat('%',#{name},'%')
+            </if>
+        </trim>
+    </select>
+    <insert id="addStuClass" parameterType="String">
+        INSERT INTO stuclass (classname) VALUES (#{classname})
+    </insert>
+    <select id="findOne" parameterType="Integer" resultType="StuClass">
+        SELECT * FROM stuclass where classid = #{id}
+    </select>
+    <update id="updStuClass" parameterType="StuClass">
+        UPDATE stuclass SET  classname=#{classname} WHERE classid=#{classid}
+    </update>
+    <select id="findStudent" parameterType="Integer" resultType="Student">
+        SELECT * FROM student WHERE stuclass = #{stuclass}
+    </select>
+    <delete id="delStuClass" parameterType="Integer">
+        DELETE FROM stuclass WHERE classid=#{classid}
+    </delete>
+    <delete id="delStudent" parameterType="Integer">
+        DELETE FROM student WHERE stuclass = #{stuclass}
+    </delete>
+</mapper>

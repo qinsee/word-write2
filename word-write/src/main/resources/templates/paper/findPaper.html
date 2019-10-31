@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/jdbc">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+    <style>
+        /*div{border: 1px solid red;}*/
+        .layui-this,.layui-tab-content{
+            background-color :#DDDDDD;
+        }
+        #aout{background-color: #F3F3F3;
+            border: 1px solid #CCCCCC;
+        }
+        .layui-input{
+            height: 26px;
+            width: 120px;
+            border-radius:5px 5px 5px 5px;
+        }
+        .layui-form-label{
+            margin-top: -5px;
+        }
+        .layui-tab{
+            margin-top: 1px;
+            border: 1px solid #CCCCCC;
+            border-radius:5px 5px 5px 5px;
+        }
+    </style>
+</head>
+<body>
+<br/>
+<div class="layui-fluid layui-form">
+    <div class="layui-row"id="aout" >
+        <div class="layui-col-sm2" >
+            <h3><img src="../../images/tit.png" />&nbsp;试卷管理</h3>
+        </div>
+        <div class="layui-col-sm1 layui-col-md-offset9">
+            <a id="btnAdd" class="layui-btn layui-btn-sm" style="margin-top: 8px;">
+                <i class="layui-icon layui-icon-add-1"></i>新增试卷
+            </a>
+        </div>
+    </div>
+    <div class="layui-row" >
+        <div class="layui-col-sm12">
+            <div class="demoTable">
+                <div class="layui-tab" >
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">普通查询</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-row" >
+                            <div class="layui-col-sm3">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">试卷号</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="pnum" id="pnum" required  lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-sm3">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">出题人员</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="username" id="username" required  lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-sm3">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">考试班级<span style="color: red;">*</span></label>
+                                    <div class="layui-input-block">
+                                        <select name="classid" id="classid"  lay-verify="required">
+                                            <option value="">请选择</option>··
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row" >
+                            <div class="layui-col-sm3">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">开始日期<span style="color: red;">*</span></label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" id="pdateStart" name="pdateStart"  lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" style="width: 270px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-sm3">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">开始日期<span style="color: red;">*</span></label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" id="pdateEnd" name="pdateEnd"  lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" style="width: 270px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-sm3 " style=" padding-left: 70px;">
+                                <button class="layui-btn layui-btn-sm" id="but" data-type="reload">
+                                    <i class="layui-icon layui-icon-search "></i>提交查询</button>
+                                <button type="reset" id="rebut" class="layui-btn layui-btn-sm ">清空查询</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <table id="rcved" lay-filter="rcved" class="layui-table"></table>
+        <script type="text/html" id="barDemo">
+<!--            <a class="layui-btn  layui-btn-normal layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe705;</i>查看</a> -->
+<!--            <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>-->
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+        </script>
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:inline="none">
+    layui.use('table',function(){
+        var laytable = layui.table,
+            form = layui.form;
+        laytable.render({
+            elem:'#rcved',
+            url:"../paper/findPaper",
+            method:"post",
+            cellMinWidth: 80,
+            width:"100%",
+            height:500,
+            page : true,//开启分页
+            size:'md',
+            limit : 10,//默认50条数据一页
+            // limits : [50,100,150,200], //数据分页条
+            id:'testReload2',
+            cols:[[
+                {field:"pid",title:"题目号", width:80,unresize: true,sort:true},
+                {field:"pnum",title:"试卷号", width:110,event:'setSing'},
+                {field:"word",title:"单词", width:120,event:'setSing'},
+                {field:"pdate",title:"试卷日期", width:120,event:'setSing'},
+                {field:"classname",title:"考试班级", width:120,event:'setSing'},
+                {field:"username",title:"出题人员", width:120,event:'setSing'},
+                {title:"操作",width: 240, align:'center', toolbar: '#barDemo',event:'setSing'}
+            ]]
+        });
+        var $=layui.$,active={
+            reload:function(){
+                //执行重载
+                laytable.reload('testReload2',{
+                    page:{
+                        curr:1
+                    },
+                    where:{
+                        pnum:$('#pnum').val(),
+                        pdateStart:$('#pdateStart').val(),
+                        pdateEnd:$('#pdateEnd').val(),
+                        classid:$('#classid').val(),
+                        username:$('#username').val()
+                    }
+                });
+            }
+        };
+        //单击查询
+        $("#btnFind").on('click',function(){
+            var type = $(this).data('type');
+            active[type]?active[type].call(this) : '';
+        });
+
+        //监听工具条
+        laytable.on('tool(rcved)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event;//获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除信息吗?', function(index){
+                    //$("#pid").val(data.pid);
+                    $.ajax({
+                        type:"post",
+                        url:"../paper/delPaper",
+                        data:{
+                            pnum:data.pnum
+                        },
+                        success:function(reqData){
+                            if(reqData>0){
+                                layer.msg('删除成功', {icon: 1,time: 1000});
+                            }else {
+                                layer.msg('删除失败', {icon: 2,time: 1000});
+                            }
+                        },
+                        error:function(){
+                            layer.msg('ajax执行错误！', {icon: 2,time: 1000});
+                        }
+                    });
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if(layEvent === 'edit'){ //修改
+                $("#pid").val(data.pid);
+                layer.open({
+                    type: 2,
+                    title: '修改信息',
+                    //maxmin: true, //最大最小窗口
+                    offset: 'auto',//位置居中
+                    //shadeClose: true, //点击遮罩关闭层
+                    shade: 0,  //不显示遮罩
+                    area:['1080px' , '800px'],
+                    content:'showAddSort?id='+data.id//弹框显示的url,对应的页面
+                });
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript" th:inline="none">
+    $("document").ready(function(){
+        $("#btnAdd").click(function(){
+            $("#pid").val(0);
+            layer.open({
+                type: 2,
+                title: '添加信息',
+                //maxmin: true, //最大最小窗口
+                offset: 'auto',//位置居中
+                //shadeClose: true, //点击遮罩关闭层
+                shade: 0.5,  //不显示遮罩
+                area:['1080px' , '800px'],
+                content:'../paper/showAddPaper',//弹框显示的url,对应的页面
+                //anim:1//弹出动画
+            });
+        });
+    });
+</script>
+<script>
+    layui.use(['form', 'laydate'], function() {
+        var form = layui.form,
+            laydate = layui.laydate;
+        //日期
+        laydate.render({
+            elem: '#pdateStart',
+            type: 'date' //datetime
+
+        });
+        laydate.render({
+            elem: '#pdateEnd',
+            type: 'date' //datetime
+
+        });
+    });
+</script>
+<script type="text/javascript">
+    function upload1(){
+        $.ajax({
+            url: '../paper/findStuClass',
+            dataType: 'json',
+            data:{'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) {
+                $.each(data.data, function (index, stuClass) {
+                    //$('#temp').append(new Option(item.name, item.id));// 下拉菜单里添加元素
+                    var txt2=$("<option value='"+stuClass.classid+"'></option>").text(stuClass.classname);
+                    $('#classid').append(txt2);
+                });
+                layui.form.render("select");
+            }
+        });
+    }
+    $(document).ready(function(){
+        upload1();
+    });
+</script>
+</html>

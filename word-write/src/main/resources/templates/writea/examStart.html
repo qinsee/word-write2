@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+</head>
+<body>
+<div class="layui-container layui-form">
+    <div class="layui-row">
+        <div class="layui-col-sm12">
+            <h2 style="text-align: center">开始默写单词</h2>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm3">&nbsp;</div>
+        <div class="layui-col-sm2" style="text-align: center">考试时间：120 分钟</div>
+        <div class="layui-col-sm2" style="text-align: center">考生：</div>
+        <div class="layui-col-sm2" style="text-align: center">总分：100 分</div>
+        <div class="layui-col-sm3">&nbsp;</div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">&nbsp;</div>
+        <div class="layui-col-sm4" id="tTime" style="text-align: center"></div>
+        <div class="layui-col-sm4">&nbsp;</div>
+    </div>
+    <div class="layui-row">
+        <table lay-filter="dem" class="layui-table" id="demo1">
+            <thead>
+            <tr>
+                <th lay-data="{field:'username', width:100}">题目号</th>
+                <th lay-data="{field:'experience', width:80, sort:true}">中文意思</th>
+                <th lay-data="{field:'experience', width:80, sort:true}">英文</th>
+            </tr>
+            </thead>
+            <tbody class="layui-table-body" id="tbody">
+            <tr>
+                <td >1</td>
+                <td>人生就像是一场修行a</td>
+                <td><input type="text" id="pnum" name="pnum" required
+                           lay-verify="required" autocomplete="off" class="layui-input"></td>
+            </tr>
+            <tr>
+                <td >2</td>
+                <td>人生就像是一场修行a</td>
+                <td><input type="text" id="pnum1" name="pnum" required
+                           lay-verify="required" autocomplete="off" class="layui-input"></td>
+            </tr>
+            <tr>
+                <td >3</td>
+                <td>人生就像是一场修行a</td>
+                <td><input type="text" id="pnum2" name="pnum" required
+                           lay-verify="required" autocomplete="off" class="layui-input"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="layui-row" style="text-align: right;">
+            <div class="layui-col-sm4">&nbsp;</div>
+            <div class="layui-col-sm2">
+                <button class="layui-btn layui-btn-sm " id="btnSave">
+                    <i class="layui-icon layui-icon-ok "></i>保存
+                </button>
+                <button class="layui-btn layui-btn-sm " id="btnCancel">
+                    <i class="layui-icon layui-icon-close "></i>取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    var ksTime; //定义考试时间以分钟计算
+    ksTime = 120;//设置时间 这里设置为0.1代表是6秒,测试用
+    if(readCookie("ss")==""){
+        setCookie("ss",new Date(),ksTime/60);
+    }
+    function sT(){
+        var tti = new Date();
+        var lt  = parseInt((tti-new Date(readCookie("ss")))/1000)
+        if((ksTime*60-lt)<0){
+            setCookie("ss",new Date(),0);
+            alert("考试时间到!\n即将提交试卷!");
+            document.forms[0].submit();
+        }else{
+            lm = Math.floor(lt / 60);
+            ls = lt % 60;
+            allY = ksTime*60-lt;
+            ym = Math.floor(allY / 60);
+            ys = allY % 60;
+            document.getElementById("tTime").innerHTML = "考试已经开始了" + lm + "分" + ls + "秒" + ",剩余"  + ym + "分" + ys + "秒";
+            var ttt = setTimeout("sT()",1000);
+        }
+    }
+    function readCookie(name) {
+        var cookieValue = "";
+        var search = name + "=";
+        if(document.cookie.length > 0) {
+            offset = document.cookie.indexOf(search);
+            if (offset != -1) {
+                offset += search.length;
+                end = document.cookie.indexOf(";", offset);
+                if (end == -1)
+                    end = document.cookie.length;
+                cookieValue = document.cookie.substring(offset, end)
+            }
+        }
+        return cookieValue;
+    }
+    function setCookie(name, value, hours) {
+        var expire = "";
+        if(hours != null) {
+            expire = new Date((new Date()).getTime() + hours * 3600000);
+            expire = "; expires=" + expire.toGMTString();
+        }
+        document.cookie = name + "=" + value + expire;
+    }
+    $(document).ready(function () {
+        sT();
+    })
+</script>
+<script type="text/javascript">
+    layui.use('layer', function(){
+        var layer = layui.layer;
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+                $.ajax({
+                    type : "post",
+                    url : "../writea/examStart",
+                    data : {
+
+                    },
+                    dataType : "json",
+                    success : function(data) {
+
+                        //alert(data);
+                        var list=[];
+                        var str = '';
+                        $.each(data,function(index,value){
+                            str += "<tr>";
+                            str += "<td>第";
+                            str += index+1;
+                            str += "题</td>";
+                            str += "<td>";
+                            str += value.wordmeaning;
+                            str += "</td>";
+                            str += "<td>";
+                            str += "<input type='text' id='writeword' name='writeword'  requiredlay-verify='required' autocomplete='off' class='layui-input'>"
+                            str += "</td>";
+                            // if(value.word==$("#writeword").val()){
+                            //     str += "<input type='text' id='isflag1' name='isflag1' value='1' requiredlay-verify='required' autocomplete='off' class='layui-input'>"
+                            // }else{
+                            //     str += "<input type='text' id='isflag2' name='isflag2' value='0' requiredlay-verify='required' autocomplete='off' class='layui-input'>"
+                            // }
+                            str += "</tr>";
+
+                        });　　　　　　　//将拼接的内容放置内容显示区域
+                        $("#tbody").html(str);
+
+                    },
+                    error : function() {
+                        layer.msg('ajax执行错误！', {
+                            icon : 2,
+                            time : 1000
+                        });
+                    }
+                });
+        })
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btnSave").click(function() {
+            var array = [];
+            $("input[name='writeword']").each(function(){
+                                array.push($(this).val());
+                             })
+                $.ajax({
+                    type : "post",
+                    url : "../writea/finshiWritea",
+                    data : {
+                        writeword1 :JSON.stringify(array)
+                    },
+                    dataType : "json",
+                    success : function(reqData) {
+                        alert(reqData);
+                            layer.msg(reqData+'分', {
+                                icon : 1,
+                                time : 1000
+                            }, function() {
+                                parent.location.reload();
+                            });
+                    },
+                    error : function() {
+                        layer.msg('ajax执行错误！', {
+                            icon : 2,
+                            time : 1000
+                        });
+                    }
+                });
+        })
+    })
+</script>
+</html>

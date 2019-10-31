@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.word.write.dao.PaperMapper">
+    <insert id="addPaper" parameterType="Paper">
+		INSERT INTO `word_write`.`paper` (`pid`, `pnum`, `wordid`, `pdate`, `classid`, `username`)
+		VALUES (#{pid}, #{pnum}, #{wordid}, #{pdate}, #{classid}, #{username});
+	</insert>
+
+    <update id="updPaper" parameterType="Paper">
+		UPDATE `word_write`.`paper` SET  `pnum`=#{pnum}, `wordid`=#{wordid}, `pdate`=#{pdate}, `classid`=#{classid}, `username`=#{username} WHERE `pid`=#{pid};
+	</update>
+    <delete id="delPaper" parameterType="String">
+	   delete from paper where pnum=#{pnum}
+	</delete>
+    <select id="findPaperCount" resultType="int">
+        select COUNT(1) from paper p,worda w,stuclass s
+        <where>
+            p.wordid = w.wordid and p.classid = s.classid
+            <if test="pnum!=null">
+                and p.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="pdateStart!=null">
+                and p.pdate between #{pdateStart} and #{pdateEnd}
+            </if>
+            <if test="classid!=null">
+                and p.classid=#{classid}
+            </if>
+            <if test="username!=null">
+                and p.username like CONCAT('%',#{username},'%')
+            </if>
+        </where>
+    </select>
+    <select id="findPaper" resultType="Paper">
+        select p.*,w.*,s.* from paper p,worda w,stuclass s
+        <where>
+            p.wordid = w.wordid and p.classid = s.classid
+            <if test="pnum!=null">
+                and p.pnum like CONCAT('%',#{pnum},'%')
+            </if>
+            <if test="pdateStart!=null">
+                and p.pdate between #{pdateStart} and #{pdateEnd}
+            </if>
+            <if test="classid!=null">
+                and p.classid=#{classid}
+            </if>
+            <if test="username!=null">
+                and p.username like CONCAT('%',#{username},'%')
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+    <select id="findStuClass" resultType="StuClass">
+        select * from stuclass
+    </select>
+    <select id="findWordaCount" resultType="int">
+        select COUNT(1) from worda
+    </select>
+    <select id="findPaperById" parameterType="Integer" resultType="Paper">
+	    select * from Paper where pid=#{pid}
+	</select>
+</mapper>

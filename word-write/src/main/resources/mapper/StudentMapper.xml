@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.word.write.dao.StudentMapper">
+    <insert id="addStudent" parameterType="Student">
+		INSERT INTO `word_write`.`student` (`stuid`, `stuclass`, `stuname`, `stuphone`, `parphone`)
+		 VALUES (#{stuid}, #{stuclass}, #{stuname}, #{stuphone}, #{parphone});
+	</insert>
+
+    <update id="updStudent" parameterType="Student">
+		UPDATE `word_write`.`student` SET  `stuclass`=#{stuclass}, `stuname`=#{stuname}, `stuphone`=#{stuphone}, `parphone`=#{parphone} WHERE `stuid`=#{stuid};
+	</update>
+    <delete id="delStudent" parameterType="String">
+	   delete from Student where stuid=#{stuid}
+	</delete>
+    <select id="findStudentCount" resultType="int">
+        select COUNT(1) from student t,stuclass c
+        <where>
+            t.stuclass=c.classid
+            <if test="stuname!=null">
+                and stuname like CONCAT('%',#{stuname},'%')
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+        </where>
+    </select>
+    <select id="findStudent" resultType="Student">
+        select * from student t,stuclass c
+        <where>
+            t.stuclass=c.classid
+            <if test="stuname!=null">
+                and stuname like CONCAT('%',#{stuname},'%')
+            </if>
+            <if test="stuclass!=null">
+                and stuclass=#{stuclass}
+            </if>
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+
+    <select id="findStudentById" parameterType="String" resultType="Student">
+	    select * from student where stuid=#{stuid}
+	</select>
+</mapper>

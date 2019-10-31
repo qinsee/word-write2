@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="../../layuicms/layui/css/layui.css" >
+    <script type="text/javascript"
+            src="../../js/jquery-2.1.1.js" ></script>
+    <script type="text/javascript"
+            src="../../layuicms/layui/layui.js"></script>
+    <style type="text/css">
+        #div{
+            background-color: #F3F3F3;
+            border: 1px solid #CCCCCC;
+            height:40px;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="layui-container layui-form">
+    <div class="layui-row" style="border-bottom:1px solid grey ;" id="div">
+        <h1><img src="../../images/tit1.png" />&nbsp;新增学生</h1>
+    </div>
+    <br /><input type="text" id="w" name="w" class="layui-hide" />
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学号<span style="color: red;">*</span></label>
+                <div class="layui-input-block">
+                    <input type="text" id="stuid" name="stuid" required
+                           lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学生姓名<span style="color: red;">*</span></label>
+                <div class="layui-input-block">
+                    <input type="text" id="stuname" name="stuname" required value="25"
+                           lay-verify="required"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学生班级<span style="color: red;">*</span></label>
+                <div class="layui-input-block">
+                    <select name="classid" id="classid"  lay-verify="required">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学生手机号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="stuphone" id="stuphone" required  lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-sm4">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学生手机号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="parphone" id="parphone" required  lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="layui-row" style="text-align: right;">
+        <div class="layui-col-sm4">&nbsp;</div>
+        <div class="layui-col-sm2">
+            <button class="layui-btn layui-btn-sm " id="btnSave">
+                <i class="layui-icon layui-icon-ok "></i>保存
+            </button>
+            <button class="layui-btn layui-btn-sm " id="btnCancel">
+                <i class="layui-icon layui-icon-close "></i>取消
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //点击查看时获取父页面的值
+    $("document").ready(function() {
+        $("#project").val(parent.$('#name').val());
+    });
+</script>
+<script>
+    layui.use([ 'form', 'laydate' ], function() {
+        var form = layui.form, laydate = layui.laydate;
+    });
+</script>
+<script type="text/javascript">
+    function Verification() {
+        //验证数据是否为空
+        var stuid = $("#stuid").val();
+        var stuname = $("#stuname").val();
+
+        if (stuid == "") {
+            layer.msg('学生号不能为空', {
+                icon : 2,
+                time : 1000
+            });
+            return false;
+        }
+        if (stuname == "") {
+            layer.msg('学生姓名不能为空', {
+                icon : 2,
+                time : 1000
+            });
+            return false;
+        }
+        return true;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btnSave").click(function() {
+            var verification = Verification();
+            if (Verification) {
+                $.ajax({
+                    type : "post",
+                    url : "../student/addStudent",
+                    data : {
+                        stuid : $("#stuid").val(),
+                        stuclass : $("#classid option:selected").val(),
+                        stuname : $("#stuname").val(),
+                        stuphone: $("#stuphone").val(),
+                        parphone : $("#parphone").val()
+                    },
+                    dataType : "json",
+                    success : function(reqData) {
+                        if (reqData > 0) {
+                            layer.msg('添加成功', {
+                                icon : 1,
+                                time : 1000
+                            }, function() {
+                                parent.location.reload();
+                            });
+                        } else {
+                            layer.msg('添加失败', {
+                                icon : 2,
+                                time : 1000
+                            });
+                        }
+                    },
+                    error : function() {
+                        layer.msg('ajax执行错误！', {
+                            icon : 2,
+                            time : 1000
+                        });
+                    }
+                });
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    //关闭
+    $("document").ready(function() {
+        $("#btnCancel").click(function() {
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);//关闭弹出的子页面窗口
+        });
+    });
+</script>
+<script type="text/javascript">
+    //关闭
+    $("document").ready(function() {
+        $("#btnCancel").click(function() {
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);//关闭弹出的子页面窗口
+        });
+    });
+</script>
+<script type="text/javascript">
+    function upload1(){
+        $.ajax({
+            url: '../paper/findStuClass',
+            dataType: 'json',
+            data:{'state': 0},	//查询状态为正常的所有机构类型
+            type: 'post',
+            success: function (data) {
+                $.each(data.data, function (index, stuClass) {
+                    //$('#temp').append(new Option(item.name, item.id));// 下拉菜单里添加元素
+                    var txt2=$("<option value='"+stuClass.classid+"'></option>").text(stuClass.classname);
+                    $('#classid').append(txt2);
+                });
+                layui.form.render("select");
+            }
+        });
+    }
+    $(document).ready(function(){
+        upload1();
+    });
+</script>
+</html>
